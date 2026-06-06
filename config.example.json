@@ -1,0 +1,30 @@
+{
+  "default_pause_seconds": 0.6,
+  "execution_mode": "plan",
+  "safety": {
+    "require_confirm_flag_for_live": true
+  },
+  "league": {
+    "name": "Liga principal",
+    "mode": "social",
+    "market_runs_per_day": 4,
+    "max_squad_size": 18,
+    "require_positive_balance_before_matchday": true,
+    "count_pending_bids_as_slots": true
+  },
+  "strategy": {
+    "reserve_cash": 2000000,
+    "default_target_profit_pct": 0.05,
+    "default_stop_loss_pct": -0.03
+  },
+  "ui": {
+    "window_title": "Futmondo",
+    "click_points": {
+      "market_tab_buy": [870, 210],
+      "market_tab_sell": [1010, 210],
+      "first_market_player": [900, 370],
+      "first_squad_player": [820, 410],
+      "confirm_button": [960, 700]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "balance": 10000000,
+  "players": [
+    {
+      "name": "Jugador Core",
+      "role": "core",
+      "status": "owned",
+      "buy_price": 7500000,
+      "current_value": 7900000,
+      "allow_auto_sell": false
+    },
+    {
+      "name": "Jugador Trade",
+      "role": "trade",
+      "status": "owned",
+      "buy_price": 3200000,
+      "current_value": 3410000,
+      "allow_auto_sell": true,
+      "target_profit_pct": 0.05,
+      "stop_loss_pct": -0.03
+    }
+  ],
+  "buy_targets": [
+    {
+      "name": "Objetivo Uno",
+      "max_bid": 2800000,
+      "priority": 1,
+      "enabled": true
+    }
+  ],
+  "pending_bids": [
+    {
+      "name": "Puja Abierta",
+      "amount": 2500000
+    }
+  ]
+}
