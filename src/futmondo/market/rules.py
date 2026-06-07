@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from futmondo_models import PlannedAction, Portfolio
+from futmondo.market.models import PlannedAction, Portfolio, ROLE_TRADE
 
 
 def compute_free_slots(config: dict, portfolio: Portfolio) -> int:
@@ -21,7 +21,7 @@ def build_sell_plan(config: dict, portfolio: Portfolio) -> list[PlannedAction]:
     for player in portfolio.players:
         if player.status != "owned":
             continue
-        if player.role != "trade":
+        if player.role != ROLE_TRADE:
             continue
         if not player.allow_auto_sell:
             continue

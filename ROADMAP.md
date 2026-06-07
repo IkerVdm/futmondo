@@ -4,7 +4,7 @@ Proyecto global para automatizar tareas de Futmondo por modulos.
 
 ## Modulos
 
-- `market`: compra, venta, pujas, control de plazas y cartera `core/trade`.
+- `market`: compra, venta, pujas, control de plazas y cartera `core/trade/hold`.
 - `lineups`: alineaciones, validacion previa a jornada y guardado.
 - `watchlist`: objetivos de fichaje, prioridad y limites de puja.
 - `reporting`: estado de cartera, logs y decisiones tomadas.
@@ -13,12 +13,14 @@ Proyecto global para automatizar tareas de Futmondo por modulos.
 ## Fases
 
 1. `market-v1`
-   - cartera local
+   - cartera local modular
    - roles `core/trade/hold`
    - plan de compras
    - plan de ventas
    - seguridad por modo `plan/live`
+   - revision guiada de roles pendientes
 2. `market-v2`
+   - captura del snapshot real desde Futmondo
    - sincronizacion real con Futmondo
    - ejecucion visual de pujas y ventas
    - control de errores de UI
@@ -35,3 +37,9 @@ Proyecto global para automatizar tareas de Futmondo por modulos.
 ## Regla de arquitectura
 
 Cada tarea automatizable debe existir como accion aislada y poder ejecutarse sola desde CLI.
+
+## Estado actual
+
+- `market` consolidado en `src/futmondo/market/`
+- sincronizacion local preparada con `data/squad_sync.json`
+- `lineups` creado como modulo independiente listo para crecer

@@ -1,22 +1,26 @@
 # Futmondo
 
-Proyecto base para automatizar Futmondo por modulos. La primera fase cubre mercado y pruebas controladas de compra/venta; despues se podran anadir alineaciones, validaciones previas a jornada y mas reglas de negocio.
+Base modular para automatizar Futmondo por tareas pequenas. La fase actual esta centrada en `market`: compras, ventas, pujas, control de plazas y separacion clara entre jugadores `core`, `trade` y `hold`.
 
-La idea es simple:
+Principios del proyecto:
 
-- Definir tareas repetitivas como secuencias de pasos.
-- Mantener posiciones, pausas y atajos en un archivo de configuracion.
-- Poder probar todo en modo seguro con `--dry-run` antes de mover raton o pulsar teclas.
+- nada peligroso por defecto
+- primero planificar, luego ejecutar
+- no vender automaticamente jugadores `core`
+- contar pujas pendientes como plazas consumidas si aplica
+- separar configuracion y datos sensibles del repo
 
 ## Estructura
 
-- `requirements.txt`: dependencias recomendadas.
+- `requirements.txt`: dependencias recomendadas para automatizacion visual.
 - `config.example.json`: configuracion del campeonato y seguridad.
-- `data/players.example.json`: plantilla, objetivos de compra y pujas pendientes.
-- `src/main.py`: punto de entrada.
-- `src/automation.py`: capa de automatizacion.
-- `src/futmondo_*.py`: reglas y tareas de Futmondo.
-- `ROADMAP.md`: plan del proyecto global.
+- `data/players.example.json`: cartera persistente con roles, objetivos y pujas.
+- `data/squad_sync.example.json`: snapshot local para sincronizar tu plantilla real.
+- `OPENCLAW.md`: instrucciones para que OpenClaw use este repo y sus tareas.
+- `src/main.py`: punto de entrada de la CLI.
+- `src/futmondo/market/`: reglas, almacenamiento, sincronizacion y tareas de mercado.
+- `src/futmondo/lineups/`: modulo preparado para la siguiente fase.
+- `ROADMAP.md`: plan global del proyecto.
 
 ## Requisitos
 
@@ -32,6 +36,7 @@ pip install -r requirements.txt
 Copy-Item config.example.json config.json
 New-Item -ItemType Directory .\data -Force
 Copy-Item .\data\players.example.json .\data\players.json
+Copy-Item .\data\squad_sync.example.json .\data\squad_sync.json
 ```
 
 ## Uso
@@ -43,15 +48,11 @@ python .\src\main.py --list
 python .\src\main.py --task status_mercado --dry-run
 ```
 
-Marcar como `core` los jugadores clave actuales:
+Sincronizar plantilla real y revisar roles:
 
 ```powershell
-python .\src\main.py --task marcar_claves_actuales --dry-run
-```
-
-Configurar roles de forma interactiva cuando cambie tu plantilla:
-
-```powershell
+python .\src\main.py --task sincronizar_plantilla_desde_archivo --sync-source .\data\squad_sync.json
+python .\src\main.py --task revisar_roles_pendientes
 python .\src\main.py --task configurar_roles
 ```
 
@@ -76,52 +77,36 @@ python .\src\main.py --task ejecutar_ventas
 
 ## Flujo recomendado
 
-1. Rellena `data/players.json` con tu plantilla real.
-2. Marca cada jugador como `core` o `trade`.
-3. Añade objetivos en `buy_targets`.
-4. Ejecuta primero `status_mercado`, `plan_ventas` y `plan_compras`.
-5. Solo cuando el plan sea correcto, activa `execution_mode: "live"`.
+1. Rellena `data/players.json` con tu cartera base y objetivos.
+2. Actualiza `data/squad_sync.json` con un snapshot real de plantilla, valores y pujas.
+3. Ejecuta `sincronizar_plantilla_desde_archivo`.
+4. Revisa `revisar_roles_pendientes` y ajusta `configurar_roles`.
+5. Ejecuta `status_mercado`, `plan_ventas` y `plan_compras`.
+6. Solo cuando el plan sea correcto, activa `execution_mode: "live"`.
 
-Los jugadores `core` actuales detectados desde tu captura son:
+## Tareas actuales de mercado
 
-- `Vinicius`
-- `Oyarzabal`
-- `Raphinha`
-- `Moleiro`
-- `Jauregizar`
-- `Arambarri`
-- `C. Soler`
-- `Dela`
-- `Pedraza`
-- `A. Martinez`
-- `Ryan`
-- `Ugrinic`
-- `J. Alvarez`
-- `Comesana`
-- `A. Ruibal`
+- `status_mercado`: resumen de saldo, plazas y composicion `core/trade/hold`.
+- `plan_ventas`: solo propone ventas de jugadores `trade` con auto-sell permitido.
+- `plan_compras`: genera pujas segun saldo util, plazas libres y prioridades.
+- `sincronizar_plantilla_desde_archivo`: fusiona un snapshot real dentro de `players.json`.
+- `revisar_roles_pendientes`: lista jugadores sincronizados que siguen en `hold`.
+- `configurar_roles`: actualiza roles de forma interactiva.
+- `ejecutar_ventas` y `ejecutar_compras`: reservadas para modo `live`.
 
 ## Como adaptar las tareas
 
-Edita `src/futmondo_tasks.py`. Cada tarea es una funcion que recibe una instancia de `DesktopAutomation`.
-
-Ejemplo de cosas tipicas que puedes automatizar:
-
-- Sincronizar plantilla.
-- Planificar ventas de jugadores `trade`.
-- Planificar compras con limite de plazas.
-- Revisar pujas pendientes.
-- Ejecutar compras y ventas solo en modo `live`.
+Edita `src/futmondo/market/tasks.py` o anade nuevas acciones en un modulo especifico. Cada tarea debe existir como comando aislado y poder ejecutarse sola desde CLI.
 
 ## Siguiente paso util
 
-Cuando tengas tu plantilla y objetivos reales, la mejor mejora es capturar coordenadas reales de Futmondo y reemplazar los logs de `ejecutar_ventas` y `ejecutar_compras` por interacciones visuales concretas.
+Cuando el flujo de sincronizacion te funcione con datos reales, el siguiente paso natural es conectar la captura del snapshot con Futmondo y despues implementar `lineups` con validaciones previas a jornada.
 
 ## Git
-
-El proyecto ya puede vivir como repo independiente `futmondo`.
 
 Archivos locales sensibles que no deben subirse:
 
 - `config.json`
 - `data/players.json`
+- `data/squad_sync.json`
 - sesiones o credenciales futuras

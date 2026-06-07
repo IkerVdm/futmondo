@@ -1,0 +1,1 @@
+"""Futmondo automation package."""

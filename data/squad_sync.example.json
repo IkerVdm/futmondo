@@ -1,0 +1,23 @@
+{
+  "balance": 12500000,
+  "players": [
+    {
+      "name": "Jugador Core",
+      "status": "owned",
+      "buy_price": 7500000,
+      "current_value": 8050000
+    },
+    {
+      "name": "Nuevo Fichaje",
+      "status": "owned",
+      "buy_price": 2100000,
+      "current_value": 2150000
+    }
+  ],
+  "pending_bids": [
+    {
+      "name": "Puja Abierta",
+      "amount": 2500000
+    }
+  ]
+}

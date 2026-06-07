@@ -3,6 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 
+ROLE_CORE = "core"
+ROLE_TRADE = "trade"
+ROLE_HOLD = "hold"
+KNOWN_ROLES = {ROLE_CORE, ROLE_TRADE, ROLE_HOLD}
+
+
 @dataclass
 class Player:
     name: str
@@ -49,3 +55,27 @@ class PlannedAction:
     player_name: str
     reason: str
     amount: int | None = None
+
+
+@dataclass
+class SquadSnapshotPlayer:
+    name: str
+    status: str = "owned"
+    current_value: int = 0
+    buy_price: int = 0
+
+
+@dataclass
+class SquadSnapshot:
+    balance: int
+    players: list[SquadSnapshotPlayer] = field(default_factory=list)
+    pending_bids: list[PendingBid] = field(default_factory=list)
+
+
+def normalize_role(role: str | None) -> str:
+    normalized = str(role or ROLE_HOLD).strip().lower()
+    if normalized == "manual_hold":
+        normalized = ROLE_HOLD
+    if normalized not in KNOWN_ROLES:
+        return ROLE_HOLD
+    return normalized

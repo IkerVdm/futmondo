@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 config.json
 data/players.json
+data/squad_sync.json
 data/session.json
 logs/
 output/
